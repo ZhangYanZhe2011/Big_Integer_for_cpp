@@ -76,12 +76,24 @@ public:
     bool operator<=(big_int o){return !(*this>o);}
     big_int operator+(big_int o)
     {
-        
+        big_int ans;
+        if(negative==o.negative)ans.negative=negative;
+        else ans.negative=*this>o?negative:o.negative;
+        for(int i=0;i<ans.size()-1;++i)
+        {
+            if(i<size())ans[i]+=(ans.negative==negative?1:-1)*num[i];
+            if(i<o.size())ans[i]+=(ans.negative==o.negative?1:-1)*o.num[i];
+            ans[i+1]+=ans[i]/10;
+            ans[i]%=10;
+        }
+        while(ans.num.back()==0)ans.num.pop_back();
+        return ans;
     }
     big_int operator+=(big_int o){return *this=*this+o;}
     big_int operator-(big_int o)
     {
-        
+        o.negative=!o.negative;
+        return *this+o;
     }
     big_int operator-=(big_int o){return *this=*this-o;}
     big_int operator*(big_int o)
