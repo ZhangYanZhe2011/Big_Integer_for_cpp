@@ -1,3 +1,5 @@
+#include<vector>
+using namespace std;
 class big_int
 {
 public:
@@ -98,9 +100,12 @@ public:
     big_int operator-=(big_int o){return *this=*this-o;}
     big_int operator*(big_int o)
     {
+        big_int ans;
+        ans.negative=!(negative==o.negative);
+        ans.num.resize(num.size()*o.num.size());
         
     }
-    big_int operator*=(big_int o){return *this=*this*o;}
+    big_int operator*=(big_int o){return *this=(*this)*o;}
     big_int operator/(big_int o)
     {
         
