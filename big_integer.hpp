@@ -1,8 +1,17 @@
 #include<vector>
 using namespace std;
-class big_int
+struct big_int
 {
-public:
+    class error:exception
+    {
+        char *error;
+    public:
+        error(const char *p)
+        {
+            error=p;
+        }
+        const char * what(void){return error;}
+    }
     vector<int>num;
     bool negative;
     size_t size(void){return num.size();}
@@ -103,12 +112,22 @@ public:
         big_int ans;
         ans.negative=!(negative==o.negative);
         ans.num.resize(num.size()*o.num.size());
-        
+        for(int i=0;i<size();++i)
+            for(int j=0;j<o.size();++j)
+                ans.num[i+j]+=num[i]*o.num[j];
+        for(int i=0;i<ans.num.size();++i)
+        {
+            ans[i+1]=ans[i]/10;
+            ans[i]%=10;
+        }
+        while(ans.num.back()==0)ans.num.pop_back();
+        return ans;
     }
     big_int operator*=(big_int o){return *this=(*this)*o;}
     big_int operator/(big_int o)
     {
-        
+        if(o==big_int(0))throw error("The divisor cannot be 0.");
+
     }
     big_int operator/=(big_int o){return *this=*this/o;}
 };
