@@ -1,20 +1,12 @@
 #include<vector>
+#include<iostream>
 using namespace std;
 struct big_int
 {
-    class error:exception
-    {
-        char *error;
-    public:
-        error(const char *p)
-        {
-            error=p;
-        }
-        const char * what(void){return error;}
-    }
     vector<int>num;
     bool negative;
     size_t size(void){return num.size();}
+    int& operator[](unsigned a){return num[a];}
     big_int()
     {
         negative=false;
@@ -30,7 +22,7 @@ struct big_int
         } \
         while(a!=0) \
         { \
-            num.emplace_back(a%10); \
+            this->num.emplace_back(a%10); \
             a/=10; \
         } \
     }
@@ -66,7 +58,7 @@ struct big_int
                 for(int i=0;i<size();++i)
                 {
                     if(num[i]>o.num[i])return false;
-                    if(num[i]<o.num[i])reurn true;
+                    if(num[i]<o.num[i])return true;
                 }
                 return false;
         }
@@ -77,7 +69,7 @@ struct big_int
             for(int i=0;i<size();++i)
             {
                 if(num[i]>o.num[i])return true;
-                if(num[i]<o.num[i])reurn false;
+                if(num[i]<o.num[i])return false;
             }
             return false;
         }
@@ -92,10 +84,10 @@ struct big_int
         else ans.negative=*this>o?negative:o.negative;
         for(int i=0;i<ans.size()-1;++i)
         {
-            if(i<size())ans[i]+=(ans.negative==negative?1:-1)*num[i];
-            if(i<o.size())ans[i]+=(ans.negative==o.negative?1:-1)*o.num[i];
-            ans[i+1]+=ans[i]/10;
-            ans[i]%=10;
+            if(i<size())ans.num[i]+=(ans.negative==negative?1:-1)*num[i];
+            if(i<o.size())ans.num[i]+=(ans.negative==o.negative?1:-1)*o.num[i];
+            ans.num[i+1]+=ans.num[i]/10;
+            ans.num[i]%=10;
         }
         while(ans.num.back()==0)ans.num.pop_back();
         return ans;
@@ -126,8 +118,23 @@ struct big_int
     big_int operator*=(big_int o){return *this=(*this)*o;}
     big_int operator/(big_int o)
     {
-        if(o==big_int(0))throw error("The divisor cannot be 0.");
+        if(o==big_int(0))throw "The divisor cannot be 0.";
 
     }
     big_int operator/=(big_int o){return *this=*this/o;}
 };
+istream& operator>>(istream &in,big_int &a)
+{
+
+}
+ostream& operator<<(ostream &out,big_int &a)
+{
+
+}
+big_int to_big_int(const char *num)
+{
+    big_int ans;
+    while(num)
+        ans.num.push_back(int(*num)-48);
+    return ans;
+}
