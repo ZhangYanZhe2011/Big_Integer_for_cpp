@@ -142,15 +142,80 @@ struct big_int
     big_int operator*=(big_int o){return *this=(*this)*o;}
     big_int operator/(big_int o)
     {
-        if(o==big_int(0))throw "The divisor cannot be 0.";
-        big_int ans;
+        if(o==big_int(0))throw "The divisor cannot be 0.";big_int ans;
+        ans.num.pop_back();
+        ans.negative=!(negative==o.negative);
+        for(int i=0;i<o.size();++i)
+            swap(o.num[i],o.num[o.size()-i-1]);
+        for(int i=0;i<size();++i)
+            swap(num[i],num[size()-i-1]);
+        big_int temp;
+        for(int i=0;i<size();++i)
+        {
+            temp.num.push_back(num[i]);
+            int l=0,r=temp.num[0]/o.num[0],mid;
+            while(l<r)
+            {
+                mid=(l+r+1)/2;
+                if(o*mid<=temp)l=mid;
+                else r=mid-1;
+            }
+            temp=temp-o*l;
+            ans.num.push_back(l);
+        }
+        for(int i=0;i<ans.size();++i)
+            swap(ans.num[i],ans.num[ans.size()-i-1]);
+        for(int i=0;i<size();++i)
+            swap(num[i],num[size()-i-1]);
+        while(ans.num.back()==0)ans.num.pop_back();
+        if(ans.num.size()==0)
+        {
+            ans.num.push_back(0);
+            ans.negative=false;
+        }
         return ans;
     }
     big_int operator/=(big_int o){return *this=*this/o;}
+big_int operator%(big_int o)
+    {
+        if(o==big_int(0))throw "The divisor cannot be 0.";
+        big_int ans;
+        ans.negative=!(negative==o.negative);
+        ans.num.pop_back();
+        for(int i=0;i<o.size();++i)
+            swap(o.num[i],o.num[o.size()-i-1]);
+        for(int i=0;i<size();++i)
+            swap(num[i],num[size()-i-1]);
+        for(int i=0;i<size();++i)
+        {
+            ans.num.push_back(num[i]);
+            int l=0,r=ans.num[0]/o.num[0],mid;
+            while(l<r)
+            {
+                mid=(l+r+1)/2;
+                if(o*mid<=ans)l=mid;
+                else r=mid-1;
+            }
+            ans=ans-o*l;
+        }
+        for(int i=0;i<ans.size();++i)
+            swap(ans.num[i],ans.num[ans.size()-i-1]);
+        for(int i=0;i<size();++i)
+            swap(num[i],num[size()-i-1]);
+        while(ans.num.back()==0)ans.num.pop_back();
+        if(ans.num.size()==0)
+        {
+            ans.num.push_back(0);
+            ans.negative=false;
+        }
+        return ans;
+    }
+    big_int operator%=(big_int o){return *this=*this%o;}
     big_int abs(void)
     {
         big_int a=*this;
         a.negative=false;
+        
         return a;
     }
 };
